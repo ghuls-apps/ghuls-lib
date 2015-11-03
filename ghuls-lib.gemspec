@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.description = 'The library used for and by the GHULS applications.'
   s.email = 'elifosterwy@gmail.com'
   s.files = [
-    'lib/ghuls.rb'
+    'lib/ghuls/lib.rb'
   ]
   s.homepage = 'https://github.com/ghuls-apps/ghuls-lib'
   s.summary = 'The library used for and by the GHULS applications.'
