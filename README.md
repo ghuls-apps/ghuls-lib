@@ -20,5 +20,5 @@ $ bundle
 
 ## Usage
 ``` ruby
-require 'ghuls'
+require 'ghuls-lib'
 ```
