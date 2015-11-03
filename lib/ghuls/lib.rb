@@ -45,6 +45,20 @@ module GHULS
       true
     end
 
+    # Gets the username and checks if it exists in the process.
+    # @param userid [Fixnum] The user ID.
+    # @param github [Octokit::Client] See #user_exists?
+    # @return [String] The username
+    # @return [Boolean] False if it does not exist.
+    def self.get_user_and_check(userid, github)
+      begin
+        username = github.user(userid)
+      rescue Octokit::NotFound
+        return false
+      end
+      username[:login]
+    end
+
     # Returns the repos in the user's organizations that they have actually
     #   contributed to.
     # @param username [String] See #user_exists?
@@ -72,9 +86,9 @@ module GHULS
       true_repos
     end
 
-    # Gets the langauges and their bytes for the :user.
-    # @param username [String] The username to get info for.
-    # @param github [OctoKit::Client] The instance of Octokit::Client.
+    # Gets the langauges and their bytes for the user.
+    # @param username [String] See #user_exists?
+    # @param github [Octokit::Client] See #user_exists?
     # @return [Hash] The languages and their bytes, as formatted as
     #   { :Ruby => 129890, :CoffeeScript => 5970 }
     def self.get_user_langs(username, github)
@@ -95,6 +109,10 @@ module GHULS
       langs
     end
 
+    # Gets the languages and their bytes for the user's organizations.
+    # @param username [String] See #user_exists?
+    # @param github [Octokit::Client] See #user_exists?
+    # @return [Hash] See #get_user_langs
     def self.get_org_langs(username, github)
       org_repos = get_org_repos(username, github)
       langs = {}
@@ -133,6 +151,10 @@ module GHULS
       end
     end
 
+    # Gets the percentages for each language in a hash.
+    # @param langs [Hash] The language hash obtained by the get_langs methods.
+    # @return [Hash] The language percentages formatted as
+    #   { Ruby: 50%, CoffeeScript: 50% }
     def self.get_language_percentages(langs)
       total = 0
       langs.each { |_, b| total += b }
@@ -144,6 +166,11 @@ module GHULS
       lang_percents
     end
 
+    # Performs the main analysis of the user's organizations.
+    # @param username [String] See #user_exists?
+    # @param github [Octokit::Client] See #user_exists?
+    # @return [Hash] See #get_language_percentages
+    # @return [Boolean] False if user_exists? returns false.
     def self.analyze_orgs(username, github)
       if user_exists?(username, github)
         langs = get_org_langs(username, github)
@@ -154,6 +181,11 @@ module GHULS
       end
     end
 
+    # Performs the main analysis of the user.
+    # @param username [String] See #user_exists?
+    # @param github [Octokit::Client] See #user_exists?
+    # @return [Hash] See #analyze_orgs
+    # @return [Boolean] See #analyze_orgs
     def self.analyze_user(username, github)
       if user_exists?(username, github)
         langs = get_user_langs(username, github)
@@ -165,14 +197,22 @@ module GHULS
     end
 
     using StringUtility
+    # Gets a random GitHub user that actually has data to analyze.
+    #   Must always get a user that exists and has repositories, so it will
+    #   go through a loop infinitely until it gets one. Uses the GitHub Search
+    #   to find the maximum number of users, which may not be the best way to do
+    #   it. However, none of the documented GitHub APIs show that we can get the
+    #   total number of GitHub users.
+    # @param github [Octokit::Client] See #user_exists?
+    # @return [String] A random username.
     def self.get_random_user(github)
       source = open('https://github.com/search?utf8=%E2%9C%93&q=repos%3A%3E-1' \
                     '&type=Users&ref=searchresults').read
-      has_repos = false
-      while has_repos == false
+      continue = false
+      while continue == false
         userid = rand(source[/Showing (.*?) available users/, 1].to_i_separated)
-        user = github.user(userid)[:login]
-        has_repos = true unless get_user_langs(user, github).empty?
+        user = get_user_and_check(userid, github)
+        continue = true if user != false && !get_user_langs(user, github).empty?
       end
       user
     end
