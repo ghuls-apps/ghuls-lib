@@ -69,12 +69,15 @@ module GHULS
       orgs = github.organizations(username)
       repos = []
       orgs.each do |o|
-        repos += github.repositories(o[:login])
+        this_org_repos = github.repositories(o[:login])
+        next unless this_org_repos.any?
+        repos += this_org_repos
       end
       true_repos = []
       repos.each do |r|
         next if r[:fork]
         contributors = github.contributors(r[:full_name])
+        next if contributors.empty?
         contributors.each do |c|
           if c[:login] =~ /^#{username}$/i
             true_repos.push(r[:full_name])

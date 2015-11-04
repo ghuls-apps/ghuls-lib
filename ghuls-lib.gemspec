@@ -10,6 +10,6 @@ Gem::Specification.new do |s|
   ]
   s.homepage = 'https://github.com/ghuls-apps/ghuls-lib'
   s.summary = 'The library used for and by the GHULS applications.'
-  s.add_runtime_dependency('octokit')
-  s.add_runtime_dependency('string-utility')
+  s.add_runtime_dependency('octokit', '>= 4.0.1')
+  s.add_runtime_dependency('string-utility', '>= 2.5.0')
 end

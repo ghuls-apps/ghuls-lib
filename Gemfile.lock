@@ -16,8 +16,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  octokit
-  string-utility
+  octokit (>= 4.0.1)
+  string-utility (>= 2.5.0)
 
 BUNDLED WITH
    1.10.6

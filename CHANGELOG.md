@@ -1,5 +1,9 @@
 # Changelog
 ## Version 1
+### Version 1.1.3
+* Fix NoMethodError when an organization has no repositories, or contributors.
+* Fix open-ended versioning.
+
 ### Version 1.1.2
 * Update/create docs for methods.
 * Fix the issue that caused a NameError when get_random_user returned a user that no longer exists (#3).
