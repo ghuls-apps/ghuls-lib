@@ -1,5 +1,9 @@
 # Changelog
 ## Version 1
+### Version 1.2.0
+* user_exists? is no longer a thing. Instead, get_user_and_check will return false if the user doesn't exist.
+* get_user_and_check now returns a Hash of the user's username and their avatar URL.
+
 ### Version 1.1.3
 * Fix NoMethodError when an organization has no repositories, or contributors.
 * Fix open-ended versioning.
