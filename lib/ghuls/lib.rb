@@ -32,10 +32,10 @@ module GHULS
       full.at(full.index(single) + 1)
     end
 
-    # Gets the username and checks if it exists in the process.
+    # Gets the user and checks if it exists in the process.
     # @param user [Any] The user ID or name.
     # @param github [Octokit::Client] The instance of Octokit::Client.
-    # @return [Hash] Data formatted as { username: username, avatar: url }
+    # @return [Hash] Their username and avatar URL.
     # @return [Boolean] False if it does not exist.
     def self.get_user_and_check(user, github)
       begin
@@ -43,7 +43,10 @@ module GHULS
       rescue Octokit::NotFound
         return false
       end
-      { username: user_full[:login], avatar: user_full[:avatar_url] }
+      {
+        username: user_full[:login],
+        avatar: user_full[:avatar_url]
+      }
     end
 
     # Returns the repos in the user's organizations that they have actually
@@ -160,30 +163,22 @@ module GHULS
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] See #get_language_percentages
-    # @return [Boolean] False if get_user_and_check returns false.
+    # @return [Nil] If the user does not have any languages.
     def self.analyze_orgs(username, github)
-      if get_user_and_check(username, github) != false
-        langs = get_org_langs(username, github)
-        return false if langs.empty?
-        get_language_percentages(langs)
-      else
-        false
-      end
+      langs = get_org_langs(username, github)
+      return nil if langs.empty?
+      get_language_percentages(langs)
     end
 
     # Performs the main analysis of the user.
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] See #analyze_orgs
-    # @return [Boolean] See #analyze_orgs
+    # @return [Nil] See #analyze_orgs
     def self.analyze_user(username, github)
-      if get_user_and_check(username, github) != false
-        langs = get_user_langs(username, github)
-        return false if langs.empty?
-        get_language_percentages(langs)
-      else
-        false
-      end
+      langs = get_user_langs(username, github)
+      return nil if langs.empty?
+      get_language_percentages(langs)
     end
 
     using StringUtility
@@ -194,7 +189,7 @@ module GHULS
     #   it. However, none of the documented GitHub APIs show that we can get the
     #   total number of GitHub users.
     # @param github [Octokit::Client] See #get_user_and_check
-    # @return [String] A random username.
+    # @return [Hash] See #get_user_and_check.
     def self.get_random_user(github)
       source = open('https://github.com/search?utf8=%E2%9C%93&q=repos%3A%3E-1' \
                     '&type=Users&ref=searchresults').read

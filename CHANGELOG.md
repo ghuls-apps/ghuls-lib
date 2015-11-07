@@ -1,5 +1,10 @@
 # Changelog
 ## Version 1
+### Version 1.2.1
+* Docs are more accurate.
+* The analyze_orgs and analyze_user methods no longer call get_user_and_check, because that should be done on the "client" (for example: web or cli) side.
+* The analyze_orgs and analyze_user methods no longer return Boolean values. They return nil if the user has no repositories/languages.
+
 ### Version 1.2.0
 * user_exists? is no longer a thing. Instead, get_user_and_check will return false if the user doesn't exist.
 * get_user_and_check now returns a Hash of the user's username and their avatar URL.
