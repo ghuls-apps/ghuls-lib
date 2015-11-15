@@ -79,6 +79,105 @@ module GHULS
       true_repos
     end
 
+    # Gets the user's repositories organized by whether they are forks,
+    # private, public, or mirrors.
+    # @param username [String] See #get_user_and_check
+    # @param github [Octokit::Client] See #get_user_and_check
+    # @return [Hash] All the repositories under the user's account.
+    def self.get_user_repos(username, github)
+      repos = github.repositories(username)
+      forks = []
+      publics = []
+      mirrors = []
+      privates = []
+      repos.each do |r|
+        forks.push(r[:full_name]) if r[:fork]
+
+        if r[:private]
+          privates.push(r[:full_name])
+        else
+          publics.push(r[:full_name])
+        end
+
+        mirrors.push(r[:full_name]) unless r[:mirror_url].nil?
+      end
+
+      {
+        public: publics,
+        forks: forks,
+        mirrors: mirrors,
+        privates: privates
+      }
+    end
+
+    # Gets the number of forkers, stargazers, and watchers.
+    # @param repository [String] The full repository name.
+    # @param github [Octkit::Client] See #get_user_and_check
+    # @return [Hash] The forks, stars, and watcher count.
+    def self.get_forks_stars_watchers(repository, github)
+      stargazers = github.stargazers(repository).length
+      forks = github.forks(repository).length
+      watchers = github.subscribers(repository).length
+
+      {
+        forks: forks,
+        stars: stargazers,
+        watchers: watchers
+      }
+    end
+
+    # Gets the number of followers and users followed by the user.
+    # @param username [String] See #get_user_and_check
+    # @param github [Octokit::Client] See #get_user_and_check
+    # @return [Hash] The number of following and followed users.
+    def self.get_followers_following(username, github)
+      following = github.following(username)
+      followers = github.followers(username)
+
+      {
+        following: following.length,
+        followers: followers.length
+      }
+    end
+
+    # Gets the number of closed/open issues and
+    # closed (without merge)/open/merged pull requests for a repository
+    # @param repository [String] See #get_forks_stars_watchers
+    # @param github [Octokit::Client] See #get_user_and_check
+    # @return [Hash] The number of issues and pulls.
+    def self.get_issues_pulls(repository, github)
+      issues = github.list_issues(repository, state: 'all')
+      pulls = github.pull_requests(repository, state: 'all')
+      issues_open = 0
+      issues_closed = 0
+      pulls_open = 0
+      pulls_closed = 0
+      pulls_merged = 0
+      issues.each do |i|
+        issues_open += 1 if i['state'] == 'open'
+        issues_closed += 1 if i['state'] == 'closed'
+      end
+      pulls.each do |p|
+        pulls_open += 1 if p['state'] == 'open'
+        if p['state'] == 'closed'
+          pulls_merged += 1 unless p['merged_at'].nil?
+          pulls_closed += 1 if p['merged_at'].nil?
+        end
+      end
+
+      {
+        issues: {
+          closed: issues_closed,
+          open: issues_open
+        },
+        pulls: {
+          closed: pulls_closed,
+          open: pulls_open,
+          merged: pulls_merged
+        }
+      }
+    end
+
     # Gets the langauges and their bytes for the user.
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
@@ -94,8 +193,7 @@ module GHULS
           if langs[l].nil?
             langs[l] = b
           else
-            existing = langs[l]
-            langs[l] = existing + b
+            langs[l] += + b
           end
         end
       end
