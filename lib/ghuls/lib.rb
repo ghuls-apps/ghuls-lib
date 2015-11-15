@@ -193,7 +193,7 @@ module GHULS
           if langs[l].nil?
             langs[l] = b
           else
-            langs[l] += + b
+            langs[l] += b
           end
         end
       end
