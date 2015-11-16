@@ -1,4 +1,14 @@
 # Changelog
+## Version 2
+### Version 2.0.0
+* analyze methods no longer return percentages, to allow for combined data of users and organizations. This also will allow graphic applications (like the web application) to provide byte data rather than two sets of percentages. Prior to this change, the web application shows the percentages provided by GHULS::Lib, as well as the one created by Google Charts.
+* New methods to get much more data. Please see docs for detailed information (#5):
+  * get_user_repos
+  * get_forks_stars_watchers
+  * get_followers_following
+  * get_issue_pulls
+* Improved some styling.
+
 ## Version 1
 ### Version 1.2.1
 * Docs are more accurate.
