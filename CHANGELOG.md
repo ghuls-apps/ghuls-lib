@@ -1,5 +1,9 @@
 # Changelog
 ## Version 2
+### Version 2.0.2
+* Remove a puts call (oops!)
+* Fix analyze methods always returning nil.
+
 ### Version 2.0.1
 * Actually use the get_user_repos method for what it was originally created for.
 

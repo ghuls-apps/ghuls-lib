@@ -185,7 +185,6 @@ module GHULS
     #   { :Ruby => 129890, :CoffeeScript => 5970 }
     def self.get_user_langs(username, github)
       repos = get_user_repos(username, github)
-      p repos
       langs = {}
       repos[:public].each do |r|
         repo_langs = github.languages(r)
@@ -265,6 +264,7 @@ module GHULS
     def self.analyze_orgs(username, github)
       langs = get_org_langs(username, github)
       return nil if langs.empty?
+      return langs
     end
 
     # Performs the main analysis of the user.
@@ -275,6 +275,7 @@ module GHULS
     def self.analyze_user(username, github)
       langs = get_user_langs(username, github)
       return nil if langs.empty?
+      return langs
     end
 
     using StringUtility
