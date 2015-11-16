@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 2.0.1
+* Actually use the get_user_repos method for what it was originally created for.
+
 ### Version 2.0.0
 * analyze methods no longer return percentages, to allow for combined data of users and organizations. This also will allow graphic applications (like the web application) to provide byte data rather than two sets of percentages. Prior to this change, the web application shows the percentages provided by GHULS::Lib, as well as the one created by Google Charts.
 * New methods to get much more data. Please see docs for detailed information (#5):

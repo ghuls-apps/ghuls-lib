@@ -184,11 +184,11 @@ module GHULS
     # @return [Hash] The languages and their bytes, as formatted as
     #   { :Ruby => 129890, :CoffeeScript => 5970 }
     def self.get_user_langs(username, github)
-      repos = github.repositories(username)
+      repos = get_user_repos(username, github)
+      p repos
       langs = {}
-      repos.each do |r|
-        next if r[:fork]
-        repo_langs = github.languages(r[:full_name])
+      repos[:public].each do |r|
+        repo_langs = github.languages(r)
         repo_langs.each do |l, b|
           if langs[l].nil?
             langs[l] = b
