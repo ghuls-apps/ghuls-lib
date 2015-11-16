@@ -260,12 +260,11 @@ module GHULS
     # Performs the main analysis of the user's organizations.
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
-    # @return [Hash] See #get_language_percentages
+    # @return [Hash] See #get_org_langs
     # @return [Nil] If the user does not have any languages.
     def self.analyze_orgs(username, github)
       langs = get_org_langs(username, github)
       return nil if langs.empty?
-      get_language_percentages(langs)
     end
 
     # Performs the main analysis of the user.
@@ -276,7 +275,6 @@ module GHULS
     def self.analyze_user(username, github)
       langs = get_user_langs(username, github)
       return nil if langs.empty?
-      get_language_percentages(langs)
     end
 
     using StringUtility
