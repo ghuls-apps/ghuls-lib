@@ -50,7 +50,7 @@ module GHULS
     end
 
     # Returns the repos in the user's organizations that they have actually
-    #   contributed to.
+    #   contributed to, organized by forks, privates, publics, and mirrors.
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Array] All the repository full names that the user has
@@ -65,18 +65,17 @@ module GHULS
       end
       true_repos = []
       repos.each do |r|
-        next if r[:fork]
         contributors = github.contributors(r[:full_name])
         next if contributors.empty?
         contributors.each do |c|
           if c[:login] =~ /^#{username}$/i
-            true_repos.push(r[:full_name])
+            true_repos.push(r)
           else
             next
           end
         end
       end
-      true_repos
+      get_organized_repos(true_repos)
     end
 
     # Gets the user's repositories organized by whether they are forks,
@@ -85,29 +84,7 @@ module GHULS
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] All the repositories under the user's account.
     def self.get_user_repos(username, github)
-      repos = github.repositories(username)
-      forks = []
-      publics = []
-      mirrors = []
-      privates = []
-      repos.each do |r|
-        forks.push(r[:full_name]) if r[:fork]
-
-        if r[:private]
-          privates.push(r[:full_name])
-        else
-          publics.push(r[:full_name])
-        end
-
-        mirrors.push(r[:full_name]) unless r[:mirror_url].nil?
-      end
-
-      {
-        public: publics,
-        forks: forks,
-        mirrors: mirrors,
-        privates: privates
-      }
+      get_organized_repos(github.repositories(username))
     end
 
     # Gets the number of forkers, stargazers, and watchers.
@@ -256,28 +233,6 @@ module GHULS
       lang_percents
     end
 
-    # Performs the main analysis of the user's organizations.
-    # @param username [String] See #get_user_and_check
-    # @param github [Octokit::Client] See #get_user_and_check
-    # @return [Hash] See #get_org_langs
-    # @return [Nil] If the user does not have any languages.
-    def self.analyze_orgs(username, github)
-      langs = get_org_langs(username, github)
-      return nil if langs.empty?
-      return langs
-    end
-
-    # Performs the main analysis of the user.
-    # @param username [String] See #get_user_and_check
-    # @param github [Octokit::Client] See #get_user_and_check
-    # @return [Hash] See #analyze_orgs
-    # @return [Nil] See #analyze_orgs
-    def self.analyze_user(username, github)
-      langs = get_user_langs(username, github)
-      return nil if langs.empty?
-      return langs
-    end
-
     using StringUtility
     # Gets a random GitHub user that actually has data to analyze.
     #   Must always get a user that exists and has repositories, so it will
@@ -297,6 +252,38 @@ module GHULS
         continue = true if user != false && !get_user_langs(user, github).empty?
       end
       user
+    end
+
+    private
+
+    # Gets the organized repository hash for the main repository hash given
+    # by Octokit::Client#repositories
+    # @param repos [Hash] The repository hash given by Octokit
+    # @return [Hash] An organizeed hash divided into public, forked, mirrored,
+    # and private repos.
+    def self.get_organized_repos(repos)
+      forks = []
+      publics = []
+      mirrors = []
+      privates = []
+      repos.each do |r|
+        forks.push(r[:full_name]) if r[:fork]
+
+        if r[:private]
+          privates.push(r[:full_name])
+        else
+          publics.push(r[:full_name])
+        end
+
+        mirrors.push(r[:full_name]) unless r[:mirror_url].nil?
+      end
+
+      {
+        public: publics,
+        forks: forks,
+        mirrors: mirrors,
+        privates: privates
+      }
     end
   end
 end
