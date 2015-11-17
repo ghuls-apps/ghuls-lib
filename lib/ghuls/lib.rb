@@ -164,6 +164,7 @@ module GHULS
       repos = get_user_repos(username, github)
       langs = {}
       repos[:public].each do |r|
+        next if repos[:forks].include? r
         repo_langs = github.languages(r)
         repo_langs.each do |l, b|
           if langs[l].nil?
@@ -184,6 +185,7 @@ module GHULS
       org_repos = get_org_repos(username, github)
       langs = {}
       org_repos[:public].each do |r|
+        next if org_repos[:forks].include? r
         repo_langs = github.languages(r)
         repo_langs.each do |l, b|
           if langs[l].nil?

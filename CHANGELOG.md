@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 2.1.2
+* get_org_langs and get_user_langs ignore forked repositories again.
+
 ### Version 2.1.1
 * Fix get_org_langs to work with get_org_repos properly.
 
