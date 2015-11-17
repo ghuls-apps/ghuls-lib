@@ -1,5 +1,10 @@
 # Changelog
 ## Version 2
+### Version 2.1.0
+* Refactor get_user_repos to use private method get_organized_repos.
+* Refactor get_org_repos to match that of get_user_repos.
+* Delete analyze_user and analyze_orgs methods because they are no longer needed.
+
 ### Version 2.0.2
 * Remove a puts call (oops!)
 * Fix analyze methods always returning nil.
