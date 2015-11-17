@@ -183,7 +183,7 @@ module GHULS
     def self.get_org_langs(username, github)
       org_repos = get_org_repos(username, github)
       langs = {}
-      org_repos.each do |r|
+      org_repos[:public].each do |r|
         repo_langs = github.languages(r)
         repo_langs.each do |l, b|
           if langs[l].nil?

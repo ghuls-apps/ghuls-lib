@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 2.1.1
+* Fix get_org_langs to work with get_org_repos properly.
+
 ### Version 2.1.0
 * Refactor get_user_repos to use private method get_organized_repos.
 * Refactor get_org_repos to match that of get_user_repos.
