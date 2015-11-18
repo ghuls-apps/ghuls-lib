@@ -17,11 +17,10 @@ module GHULS
       gh = Octokit::Client.new(access_token: token) unless token.nil?
       begin
         encode = gh.contents('ozh/github-colors', path: 'colors.json')[:content]
-        colors = JSON.parse(Base64.decode64(encode))
+        { git: gh, colors: JSON.parse(Base64.decode64(encode)) }
       rescue Octokit::Unauthorized
         return false
       end
-      { git: gh, colors: colors }
     end
 
     # Gets the next value in an array.
@@ -29,7 +28,7 @@ module GHULS
     # @param full [Array] The main array to parse.
     # @return [Any] The next value in the array.
     def self.get_next(single, full)
-      full.at(full.index(single) + 1)
+      full[full.index(single) + 1]
     end
 
     # Gets the user and checks if it exists in the process.
@@ -40,13 +39,13 @@ module GHULS
     def self.get_user_and_check(user, github)
       begin
         user_full = github.user(user)
+        {
+          username: user_full[:login],
+          avatar: user_full[:avatar_url]
+        }
       rescue Octokit::NotFound
         return false
       end
-      {
-        username: user_full[:login],
-        avatar: user_full[:avatar_url]
-      }
     end
 
     # Returns the repos in the user's organizations that they have actually
@@ -92,14 +91,10 @@ module GHULS
     # @param github [Octkit::Client] See #get_user_and_check
     # @return [Hash] The forks, stars, and watcher count.
     def self.get_forks_stars_watchers(repository, github)
-      stargazers = github.stargazers(repository).length
-      forks = github.forks(repository).length
-      watchers = github.subscribers(repository).length
-
       {
-        forks: forks,
-        stars: stargazers,
-        watchers: watchers
+        forks: github.forks(repository).size,
+        stars: github.stargazers(repository).size,
+        watchers: github.subscribers(repository).size
       }
     end
 
@@ -108,12 +103,9 @@ module GHULS
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] The number of following and followed users.
     def self.get_followers_following(username, github)
-      following = github.following(username)
-      followers = github.followers(username)
-
       {
-        following: following.length,
-        followers: followers.length
+        following: github.following(username).size,
+        followers: github.followers(username).size
       }
     end
 
@@ -167,10 +159,11 @@ module GHULS
         next if repos[:forks].include? r
         repo_langs = github.languages(r)
         repo_langs.each do |l, b|
-          if langs[l].nil?
-            langs[l] = b
+          key = langs[l]
+          if key.nil?
+            key = b
           else
-            langs[l] += b
+            key += b
           end
         end
       end
@@ -188,11 +181,11 @@ module GHULS
         next if org_repos[:forks].include? r
         repo_langs = github.languages(r)
         repo_langs.each do |l, b|
-          if langs[l].nil?
-            langs[l] = b
+          key = langs[l]
+          if key.nil?
+            key = b
           else
-            existing = langs[l]
-            langs[l] = existing + b
+            key += b
           end
         end
       end
@@ -213,10 +206,12 @@ module GHULS
     # @return [String] The 6 digit hexidecimal color.
     # @return [Nil] If there is no defined color for the language.
     def self.get_color_for_language(lang, colors)
-      if colors[lang].nil? || colors[lang]['color'].nil?
+      color_lang = colors[lang]
+      color = color_lang['color']
+      if colors_lang.nil? || color.nil?
         return StringUtility.random_color_six
       else
-        return colors[lang]['color']
+        return color
       end
     end
 
@@ -269,15 +264,16 @@ module GHULS
       mirrors = []
       privates = []
       repos.each do |r|
-        forks.push(r[:full_name]) if r[:fork]
+        repo_name = r[:full_name]
+        forks.push(repo_name) if r[:fork]
 
         if r[:private]
-          privates.push(r[:full_name])
+          privates.push(repo_name)
         else
-          publics.push(r[:full_name])
+          publics.push(repo_name)
         end
 
-        mirrors.push(r[:full_name]) unless r[:mirror_url].nil?
+        mirrors.push(repo_name) unless r[:mirror_url].nil?
       end
 
       {
