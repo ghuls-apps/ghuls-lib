@@ -1,6 +1,7 @@
 require 'octokit'
 require 'string-utility'
 require 'open-uri'
+require 'faraday-http-cache'
 
 module GHULS
   module Lib
@@ -15,6 +16,12 @@ module GHULS
       user = opts[:user]
       gh = Octokit::Client.new(login: user, password: pass) if token.nil?
       gh = Octokit::Client.new(access_token: token) unless token.nil?
+      stack = Faraday::RackBuilder.new do |builder|
+        builder.use Faraday::HttpCache
+        builder.use Octokit::Response::RaiseError
+        builder.adapter :httpclient
+      end
+      gh.middleware = stack
       begin
         encode = gh.contents('ozh/github-colors', path: 'colors.json')[:content]
         { git: gh, colors: JSON.parse(Base64.decode64(encode)) }
