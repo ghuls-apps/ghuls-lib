@@ -19,7 +19,7 @@ module GHULS
       stack = Faraday::RackBuilder.new do |builder|
         builder.use Faraday::HttpCache, shared_cache: false
         builder.use Octokit::Response::RaiseError
-        builder.adapter :httpclient
+        builder.adapter :net_http_persistent
       end
       gh.middleware = stack
       begin
