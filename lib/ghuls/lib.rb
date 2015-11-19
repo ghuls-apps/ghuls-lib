@@ -17,7 +17,7 @@ module GHULS
       gh = Octokit::Client.new(login: user, password: pass) if token.nil?
       gh = Octokit::Client.new(access_token: token) unless token.nil?
       stack = Faraday::RackBuilder.new do |builder|
-        builder.use Faraday::HttpCache
+        builder.use Faraday::HttpCache, shared_cache: false
         builder.use Octokit::Response::RaiseError
         builder.adapter :httpclient
       end
@@ -44,15 +44,13 @@ module GHULS
     # @return [Hash] Their username and avatar URL.
     # @return [Boolean] False if it does not exist.
     def self.get_user_and_check(user, github)
-      begin
-        user_full = github.user(user)
-        {
-          username: user_full[:login],
-          avatar: user_full[:avatar_url]
-        }
-      rescue Octokit::NotFound
-        return false
-      end
+      user_full = github.user(user)
+      {
+        username: user_full[:login],
+        avatar: user_full[:avatar_url]
+      }
+    rescue Octokit::NotFound
+      return false
     end
 
     # Returns the repos in the user's organizations that they have actually
