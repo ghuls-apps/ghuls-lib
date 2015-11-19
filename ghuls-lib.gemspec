@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'ghuls-lib'
-  s.version = '2.1.2'
+  s.version = '2.2.0'
   s.required_ruby_version = '>= 2.0'
   s.authors = ['Eli Foster']
   s.description = 'The library used for and by the GHULS applications.'

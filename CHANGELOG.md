@@ -1,5 +1,12 @@
 # Changelog
 ## Version 2
+### Version 2.2.0
+* Use Net/HTTP/Persistent for the Faraday adapter to greatly improve performance, by utilizing persistent HTTP connections to GitHub.
+* Refactor most methods to slightly improve their performance, through earlier returns, less variable declarations, quicker methods,
+* Caching to improve performance.
+* Remove redundant begin blocks.
+* Upgrade StringUtility dependency to 2.6.0 for improved performance.
+
 ### Version 2.1.2
 * get_org_langs and get_user_langs ignore forked repositories again.
 
