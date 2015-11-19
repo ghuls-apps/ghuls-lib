@@ -65,7 +65,7 @@ module GHULS
       orgs.each do |o|
         this_org_repos = github.repositories(o[:login])
         next unless this_org_repos.any?
-        repos += this_org_repos
+        repos << this_org_repos
       end
       true_repos = []
       repos.each do |r|
