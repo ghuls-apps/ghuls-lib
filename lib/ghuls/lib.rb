@@ -97,9 +97,9 @@ module GHULS
     # @return [Hash] The forks, stars, and watcher count.
     def self.get_forks_stars_watchers(repository, github)
       {
-        forks: github.forks(repository).size,
-        stars: github.stargazers(repository).size,
-        watchers: github.subscribers(repository).size
+        forks: github.forks(repository).length,
+        stars: github.stargazers(repository).length,
+        watchers: github.subscribers(repository).length
       }
     end
 
@@ -109,8 +109,8 @@ module GHULS
     # @return [Hash] The number of following and followed users.
     def self.get_followers_following(username, github)
       {
-        following: github.following(username).size,
-        followers: github.followers(username).size
+        following: github.following(username).length,
+        followers: github.followers(username).length
       }
     end
 
@@ -164,11 +164,10 @@ module GHULS
         next if repos[:forks].include? r
         repo_langs = github.languages(r)
         repo_langs.each do |l, b|
-          key = langs[l]
-          if key.nil?
-            key = b
+          if langs[l].nil?
+            langs[l] = b
           else
-            key += b
+            langs[l] += b
           end
         end
       end
@@ -186,11 +185,10 @@ module GHULS
         next if org_repos[:forks].include? r
         repo_langs = github.languages(r)
         repo_langs.each do |l, b|
-          key = langs[l]
-          if key.nil?
-            key = b
+          if langs[l].nil?
+            langs[l] = b
           else
-            key += b
+            langs[l] += b
           end
         end
       end
