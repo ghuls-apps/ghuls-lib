@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 2.2.2
+* Fix LoadError by properly requiring faraday-http-cache as a dependency.
+
 ### Version 2.2.1
 * Fix NameError
 
