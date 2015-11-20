@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 2.2.1
+* Fix NameError
+
 ### Version 2.2.0
 * Use Net/HTTP/Persistent for the Faraday adapter to greatly improve performance, by utilizing persistent HTTP connections to GitHub.
 * Refactor most methods to slightly improve their performance, through earlier returns, less variable declarations, quicker methods,

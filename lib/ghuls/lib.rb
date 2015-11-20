@@ -211,7 +211,7 @@ module GHULS
     def self.get_color_for_language(lang, colors)
       color_lang = colors[lang]
       color = color_lang['color']
-      if colors_lang.nil? || color.nil?
+      if color_lang.nil? || color.nil?
         return StringUtility.random_color_six
       else
         return color
