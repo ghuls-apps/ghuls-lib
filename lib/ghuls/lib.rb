@@ -17,7 +17,7 @@ module GHULS
       gh = Octokit::Client.new(login: user, password: pass) if token.nil?
       gh = Octokit::Client.new(access_token: token) unless token.nil?
       stack = Faraday::RackBuilder.new do |builder|
-        builder.use Faraday::HttpCache, shared_cache: false
+        builder.use Faraday::HttpCache, shared_cache: false, serializer: Marshal
         builder.use Octokit::Response::RaiseError
         builder.adapter :net_http_persistent
       end

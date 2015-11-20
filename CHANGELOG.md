@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 2.2.3
+* Use Marshal serializer to fix encoding error. This is a faraday-http-cache problem, as described in plataformatec/faraday-http-cache#38 (#8)
+
 ### Version 2.2.2
 * Fix LoadError by properly requiring faraday-http-cache as a dependency.
 
