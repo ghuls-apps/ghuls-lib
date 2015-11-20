@@ -65,7 +65,7 @@ module GHULS
       orgs.each do |o|
         this_org_repos = github.repositories(o[:login])
         next unless this_org_repos.any?
-        repos << this_org_repos
+        repos.concat(this_org_repos)
       end
       true_repos = []
       repos.each do |r|
@@ -73,7 +73,7 @@ module GHULS
         next if contributors.empty?
         contributors.each do |c|
           if c[:login] =~ /^#{username}$/i
-            true_repos.push(r)
+            true_repos << r
           else
             next
           end
@@ -268,15 +268,15 @@ module GHULS
       privates = []
       repos.each do |r|
         repo_name = r[:full_name]
-        forks.push(repo_name) if r[:fork]
+        forks << repo_name if r[:fork]
 
         if r[:private]
-          privates.push(repo_name)
+          privates << repo_name
         else
-          publics.push(repo_name)
+          publics << repo_name
         end
 
-        mirrors.push(repo_name) unless r[:mirror_url].nil?
+        mirrors << repo_name unless r[:mirror_url].nil?
       end
 
       {
