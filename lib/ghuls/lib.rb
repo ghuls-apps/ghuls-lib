@@ -257,7 +257,7 @@ module GHULS
     # @param repos [Hash] The repository hash given by Octokit
     # @return [Hash] An organizeed hash divided into public, forked, mirrored,
     # and private repos.
-    def get_organized_repos(repos)
+    def self.get_organized_repos(repos)
       forks = []
       publics = []
       mirrors = []

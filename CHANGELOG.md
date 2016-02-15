@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 2.3.1
+* Fix NoMethodError caused by accessibility keyword overwriting.
+
 ### Version 2.3.0
 * Remove get_next in favor of the faster array_utility method.
 * No longer get random users with 0 repositories.
