@@ -8,21 +8,21 @@ GEM
       faraday (~> 0.8)
     multipart-post (2.0.0)
     net-http-persistent (2.9.4)
-    octokit (4.1.1)
+    octokit (4.2.0)
       sawyer (~> 0.6.0, >= 0.5.3)
     sawyer (0.6.0)
       addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
-    string-utility (2.6.0)
+    string-utility (2.6.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  faraday-http-cache
-  net-http-persistent
-  octokit (>= 4.0.1)
-  string-utility (>= 2.6.0)
+  faraday-http-cache (>= 1.2.2)
+  net-http-persistent (>= 2.9.4)
+  octokit (>= 4.2.0)
+  string-utility (>= 2.6.1)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

@@ -1,5 +1,16 @@
 # Changelog
 ## Version 2
+### Version 2.3.0
+* Remove get_next in favor of the faster array_utility method.
+* No longer get random users with 0 repositories.
+* Update all dependencies.
+  * ruby: 2.2.3 -> 2.3.0
+  * octokit: 4.0.1 -> 4.2.0
+  * string-utility: 2.6.0 -> 2.6.1
+  * net-http-persistent: nil -> 2.9.4
+  * faraday-http-cache: nil -> 1.2.2
+* Use module_function instead of self.foobar
+
 ### Version 2.2.3
 * Use Marshal serializer to fix encoding error. This is a faraday-http-cache problem, as described in plataformatec/faraday-http-cache#38 (#8)
 

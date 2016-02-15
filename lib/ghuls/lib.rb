@@ -5,17 +5,19 @@ require 'faraday-http-cache'
 
 module GHULS
   module Lib
+    module_function
+
     # Gets the Octokit and colors for the program.
     # @param opts [Hash] The options to use. The ones that are used by this
     #   method are: :token, :pass, and :user.
     # @return [Hash] A hash containing objects formatted as
     #   { git: Octokit::Client, colors: JSON }
-    def self.configure_stuff(opts = {})
+    def configure_stuff(opts = {})
       token = opts[:token]
       pass = opts[:pass]
       user = opts[:user]
-      gh = Octokit::Client.new(login: user, password: pass) if token.nil?
-      gh = Octokit::Client.new(access_token: token) unless token.nil?
+      gh_options = token.nil? ? { login: user, password: pass } : { access_token: token }
+      gh = Octokit::Client.new(gh_options)
       stack = Faraday::RackBuilder.new do |builder|
         builder.use Faraday::HttpCache, shared_cache: false, serializer: Marshal
         builder.use Octokit::Response::RaiseError
@@ -30,20 +32,12 @@ module GHULS
       end
     end
 
-    # Gets the next value in an array.
-    # @param single [Any] The current value.
-    # @param full [Array] The main array to parse.
-    # @return [Any] The next value in the array.
-    def self.get_next(single, full)
-      full[full.index(single) + 1]
-    end
-
     # Gets the user and checks if it exists in the process.
     # @param user [Any] The user ID or name.
     # @param github [Octokit::Client] The instance of Octokit::Client.
     # @return [Hash] Their username and avatar URL.
     # @return [Boolean] False if it does not exist.
-    def self.get_user_and_check(user, github)
+    def get_user_and_check(user, github)
       user_full = github.user(user)
       {
         username: user_full[:login],
@@ -59,7 +53,7 @@ module GHULS
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Array] All the repository full names that the user has
     #   contributed to.
-    def self.get_org_repos(username, github)
+    def get_org_repos(username, github)
       orgs = github.organizations(username)
       repos = []
       orgs.each do |o|
@@ -87,7 +81,7 @@ module GHULS
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] All the repositories under the user's account.
-    def self.get_user_repos(username, github)
+    def get_user_repos(username, github)
       get_organized_repos(github.repositories(username))
     end
 
@@ -95,7 +89,7 @@ module GHULS
     # @param repository [String] The full repository name.
     # @param github [Octkit::Client] See #get_user_and_check
     # @return [Hash] The forks, stars, and watcher count.
-    def self.get_forks_stars_watchers(repository, github)
+    def get_forks_stars_watchers(repository, github)
       {
         forks: github.forks(repository).length,
         stars: github.stargazers(repository).length,
@@ -107,7 +101,7 @@ module GHULS
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] The number of following and followed users.
-    def self.get_followers_following(username, github)
+    def get_followers_following(username, github)
       {
         following: github.following(username).length,
         followers: github.followers(username).length
@@ -119,7 +113,7 @@ module GHULS
     # @param repository [String] See #get_forks_stars_watchers
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] The number of issues and pulls.
-    def self.get_issues_pulls(repository, github)
+    def get_issues_pulls(repository, github)
       issues = github.list_issues(repository, state: 'all')
       pulls = github.pull_requests(repository, state: 'all')
       issues_open = 0
@@ -157,7 +151,7 @@ module GHULS
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] The languages and their bytes, as formatted as
     #   { :Ruby => 129890, :CoffeeScript => 5970 }
-    def self.get_user_langs(username, github)
+    def get_user_langs(username, github)
       repos = get_user_repos(username, github)
       langs = {}
       repos[:public].each do |r|
@@ -178,7 +172,7 @@ module GHULS
     # @param username [String] See #get_user_and_check
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] See #get_user_langs
-    def self.get_org_langs(username, github)
+    def get_org_langs(username, github)
       org_repos = get_org_repos(username, github)
       langs = {}
       org_repos[:public].each do |r|
@@ -199,7 +193,7 @@ module GHULS
     # @param part [Fixnum] The partial value.
     # @param whole [Fixnum] The whole value.
     # @return [Fixnum] The percentage that part is of whole.
-    def self.calculate_percent(part, whole)
+    def calculate_percent(part, whole)
       (part / whole) * 100
     end
 
@@ -208,7 +202,7 @@ module GHULS
     # @param colors [Hash] The hash of colors and languages.
     # @return [String] The 6 digit hexidecimal color.
     # @return [Nil] If there is no defined color for the language.
-    def self.get_color_for_language(lang, colors)
+    def get_color_for_language(lang, colors)
       color_lang = colors[lang]
       color = color_lang['color']
       if color_lang.nil? || color.nil?
@@ -222,7 +216,7 @@ module GHULS
     # @param langs [Hash] The language hash obtained by the get_langs methods.
     # @return [Hash] The language percentages formatted as
     #   { Ruby: 50%, CoffeeScript: 50% }
-    def self.get_language_percentages(langs)
+    def get_language_percentages(langs)
       total = 0
       langs.each { |_, b| total += b }
       lang_percents = {}
@@ -234,6 +228,7 @@ module GHULS
     end
 
     using StringUtility
+
     # Gets a random GitHub user that actually has data to analyze.
     #   Must always get a user that exists and has repositories, so it will
     #   go through a loop infinitely until it gets one. Uses the GitHub Search
@@ -242,15 +237,16 @@ module GHULS
     #   total number of GitHub users.
     # @param github [Octokit::Client] See #get_user_and_check
     # @return [Hash] See #get_user_and_check.
-    def self.get_random_user(github)
-      source = open('https://github.com/search?utf8=%E2%9C%93&q=repos%3A%3E-1' \
+    def get_random_user(github)
+      source = open('https://github.com/search?utf8=%E2%9C%93&q=repos%3A%3E0' \
                     '&type=Users&ref=searchresults').read
       continue = false
-      while continue == false
+      until continue
         userid = rand(source[/Showing (.*?) available users/, 1].to_i_separated)
         user = get_user_and_check(userid, github)
         continue = true if user != false && !get_user_langs(user, github).empty?
       end
+      # noinspection RubyScope
       user
     end
 
@@ -261,7 +257,7 @@ module GHULS
     # @param repos [Hash] The repository hash given by Octokit
     # @return [Hash] An organizeed hash divided into public, forked, mirrored,
     # and private repos.
-    def self.get_organized_repos(repos)
+    def get_organized_repos(repos)
       forks = []
       publics = []
       mirrors = []
