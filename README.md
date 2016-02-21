@@ -1,4 +1,6 @@
 # ghuls-lib
+[![Gem Version](https://badge.fury.io/rb/ghuls-lib.svg)](https://badge.fury.io/rb/ghuls-lib)
+
 The library Ruby Gem for GHULS
 
 ## Installation
