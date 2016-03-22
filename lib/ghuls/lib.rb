@@ -242,7 +242,9 @@ module GHULS
                     '&type=Users&ref=searchresults').read
       continue = false
       until continue
-        userid = rand(source[/Showing (.*?) available users/, 1].to_i_separated)
+        # Really, GitHub? ’ and not '?
+        max = source[/We['’]ve found (.*?) users/] || source[/Showing (.*?) available users/]
+        userid = rand(max.to_i_separated)
         user = get_user_and_check(userid, github)
         continue = true if user != false && !get_user_langs(user, github).empty?
       end

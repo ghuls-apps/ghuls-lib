@@ -1,5 +1,9 @@
 # Changelog
 ## Version 2
+### Version 2.3.2
+* Bump Octokit and StringUtility versions.
+* Fix `NoMethodError #to_i_separated on nilClass` error in `#get_random_user` caused by an outdated regex.
+
 ### Version 2.3.1
 * Fix NoMethodError caused by accessibility keyword overwriting.
 
