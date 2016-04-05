@@ -242,9 +242,7 @@ module GHULS
     # @param whole [Any] The whole value. Must implement #to_f, or be a Float.
     # @return [Float] The percentage that part is of whole.
     def self.calculate_percent(part, whole)
-      part = part.is_a?(Float) ? part : part.to_f
-      whole = whole.is_a?(Float) ? whole : whole.to_f
-      (part / whole) * 100
+      (part.to_f / whole.to_f) * 100
     end
 
     private
