@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'ghuls-lib'
-  s.version = '2.3.2'
+  s.version = '2.3.3'
   s.required_ruby_version = '>= 2.0'
   s.authors = ['Eli Foster']
   s.description = 'The library used for and by the GHULS applications.'
@@ -10,8 +10,9 @@ Gem::Specification.new do |s|
   ]
   s.homepage = 'https://github.com/ghuls-apps/ghuls-lib'
   s.summary = 'The library used for and by the GHULS applications.'
-  s.add_runtime_dependency('octokit', '>= 4.3.0')
-  s.add_runtime_dependency('string-utility', '>= 2.7.1')
-  s.add_runtime_dependency('net-http-persistent', '>= 2.9.4')
-  s.add_runtime_dependency('faraday-http-cache', '>= 1.2.2')
+  s.license = 'MIT'
+  s.add_runtime_dependency('octokit', '~> 4.3')
+  s.add_runtime_dependency('string-utility', '~> 2.7')
+  s.add_runtime_dependency('net-http-persistent', '~> 2.9')
+  s.add_runtime_dependency('faraday-http-cache', '~> 1.3')
 end
