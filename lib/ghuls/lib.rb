@@ -207,7 +207,7 @@ module GHULS
       langs.each { |_, b| total += b }
       lang_percents = {}
       langs.each do |l, b|
-        percent = calculate_percent(b, total.to_f)
+        percent = self.class.calculate_percent(b, total.to_f)
         lang_percents[l] = percent.round(2)
       end
       lang_percents

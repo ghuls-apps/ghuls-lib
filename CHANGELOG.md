@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 3.0.2
+* Fix NoMethodError on calculate_percent
+
 ### Version 3.0.1
 * Fix NoMethodError on get_organized_repos private function.
 
