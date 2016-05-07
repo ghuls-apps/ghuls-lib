@@ -1,5 +1,10 @@
 # Changelog
 ## Version 2
+### Version 3.0.0
+* A more object oriented approach: Ghuls::Lib is now a class, and uses initialize and instance methods instead of a 
+bunch of module functions. No methods take the colors hash or the Octokit instance anymore. `calculate_percent` is, 
+however, *not* an instance method.
+
 ### Version 2.3.3
 * Pessimistic version requirements.
 * License as MIT.
