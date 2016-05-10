@@ -30,6 +30,7 @@ module GHULS
         builder.adapter :net_http_persistent
       end
       gh.middleware = stack
+      gh.auto_paginate = true
       encode = gh.contents('ozh/github-colors', path: 'colors.json')[:content]
       @octokit = gh
       @colors = JSON.parse(Base64.decode64(encode))

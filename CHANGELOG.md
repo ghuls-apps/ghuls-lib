@@ -1,5 +1,8 @@
 # Changelog
 ## Version 2
+### Version 3.0.3
+* Auto-paginate API results to actually get accurate data (#11)
+
 ### Version 3.0.2
 * Fix NoMethodError on calculate_percent
 
