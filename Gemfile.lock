@@ -24,5 +24,8 @@ DEPENDENCIES
   octokit (~> 4.3)
   string-utility (~> 2.7)
 
+RUBY VERSION
+   ruby 2.4.1p111
+
 BUNDLED WITH
-   1.11.2
+   1.14.6
