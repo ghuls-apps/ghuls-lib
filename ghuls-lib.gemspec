@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary = 'The library used for and by the GHULS applications.'
   s.license = 'MIT'
   s.add_runtime_dependency('octokit', '~> 4.3')
-  s.add_runtime_dependency('string-utility', '~> 2.7')
+  s.add_runtime_dependency('string-utility', '~> 3.0')
   s.add_runtime_dependency('net-http-persistent', '~> 2.9')
   s.add_runtime_dependency('faraday-http-cache', '~> 1.3')
 end
